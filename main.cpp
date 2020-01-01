@@ -5,11 +5,13 @@
 #include <QQmlContext>
 #include "windowupdater.h"
 
-static QObject *windowUpdaterProvider (QQmlEngine *engine, QJSEngine *scriptEngine) {
+static QObject *UpdaterInterfaceProvider (QQmlEngine *engine, QJSEngine *scriptEngine) {
         Q_UNUSED(engine)
         Q_UNUSED(scriptEngine)
 
-        windowUpdater *updater = windowUpdater::getInstance();
+        qDebug() << "Entered provider" << endl;
+
+        UpdaterInterface *updater = UpdaterInterface::getInstance();
         return updater;
     }
 
@@ -22,17 +24,9 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
+    qDebug() << "Starting application" << endl;
 
-
-    qmlRegisterSingletonType<windowUpdater>("threadtest", 1, 0, "Updater", windowUpdaterProvider);
-
-    windowUpdater *updater = windowUpdater::getInstance();
-    QThread *thread = new QThread;
-    updater->moveToThread(thread);
-    thread->start();
-    //qmlRegisterType<windowUpdater>("threadtest", 1, 0, "Updater");
-
-    engine.rootContext()->setContextProperty("threadtest",updater);
+    qmlRegisterSingletonType<UpdaterInterface>("threadtest", 1, 0, "Updater", UpdaterInterfaceProvider);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

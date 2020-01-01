@@ -1,31 +1,20 @@
 #include "windowupdater.h"
 #include <QObject>
 #include <QDebug>
-windowUpdater::windowUpdater()
-{
-    timer = new QTimer();
-    timer->setInterval(1000);
-    connect(timer, SIGNAL(timeout()), this, SLOT(tock()));
-    timer->start();
-}
 
-windowUpdater *windowUpdater::instance = nullptr;
+UpdaterInterface *UpdaterInterface::instance = nullptr;
 
-windowUpdater *windowUpdater::getInstance() {
+UpdaterInterface *UpdaterInterface::getInstance() {
         if (instance == nullptr) {
-            instance = new windowUpdater();
+            qDebug() << "Creating interface" << endl;
+            instance = new UpdaterInterface();
+        } else {
+            qDebug() << "Interface exists" << endl;
         }
+
         return instance;
     }
 
-
-void windowUpdater::tock() {
-    qDebug() << "AAAAAAAA" << endl;
-    if (worked) {
-        emit hasWork(1);
-        worked = false;
-    } else {
-        emit hasWork(2);
-        worked = true;
-    }
+void UpdaterInterface::hasWork(int arg) {
+    emit updateGUI(arg);
 }

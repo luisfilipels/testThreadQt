@@ -22,30 +22,16 @@ Window {
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 44
 
-        Updater.onHasWork:  {
+        Updater.onUpdateGUI:  {
             if (arg === 1) {
                 element.text = "Hello World!"
                 element.color = "#ffffff"
                 window.color = "#000000"
             } else {
-                element.text = ":D"
+                element.text = "World Hello!"
                 element.color = "000000"
                 window.color = "#ffffff"
             }
         }
-
-        /*Updater {
-            onHasWork: {
-                if (arg === 1) {
-                    element.text = "Hello World!"
-                    element.color = "#ffffff"
-                    window.color = "#000000"
-                } else {
-                    element.text = ":D"
-                    element.color = "000000"
-                    window.color = "#ffffff"
-                }
-            }
-        }*/
     }
 }
