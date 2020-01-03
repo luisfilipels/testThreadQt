@@ -15,6 +15,4 @@ UpdaterInterface *UpdaterInterface::getInstance() {
         return instance;
     }
 
-void UpdaterInterface::hasWork(int arg) {
-    emit updateGUI(arg);
-}
+

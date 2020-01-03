@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QThread>
+#include <QQmlApplicationEngine>
 
 
 class windowUpdater : public QObject
@@ -51,13 +52,25 @@ signals:
     void updateGUI(int arg);
 
 public slots:
-    void hasWork(int arg);
+    void hasWork(int arg) {
+        emit updateGUI(arg);
+    }
+
+    static QObject *UpdaterInterfaceProvider (QQmlEngine *engine, QJSEngine *scriptEngine) {
+            Q_UNUSED(engine)
+            Q_UNUSED(scriptEngine)
+
+            qDebug() << "Entered provider" << endl;
+
+            UpdaterInterface *updater = UpdaterInterface::getInstance();
+            return updater;
+        }
 
 
 private:
     UpdaterInterface() {
         worker = new windowUpdater();
-        qDebug() << ":(" << endl;
+        qDebug() << "Initializing Window Updater" << endl;
         worker->moveToThread(&myThread);
         connect(worker, &windowUpdater::tick, this, &UpdaterInterface::hasWork);
         myThread.start();

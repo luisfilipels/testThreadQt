@@ -5,17 +5,6 @@
 #include <QQmlContext>
 #include "windowupdater.h"
 
-static QObject *UpdaterInterfaceProvider (QQmlEngine *engine, QJSEngine *scriptEngine) {
-        Q_UNUSED(engine)
-        Q_UNUSED(scriptEngine)
-
-        qDebug() << "Entered provider" << endl;
-
-        UpdaterInterface *updater = UpdaterInterface::getInstance();
-        return updater;
-    }
-
-
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -26,7 +15,9 @@ int main(int argc, char *argv[])
 
     qDebug() << "Starting application" << endl;
 
-    qmlRegisterSingletonType<UpdaterInterface>("threadtest", 1, 0, "Updater", UpdaterInterfaceProvider);
+    UpdaterInterface::getInstance();
+
+    qmlRegisterSingletonType<UpdaterInterface>("threadtest", 1, 0, "Updater", &UpdaterInterface::UpdaterInterfaceProvider);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
