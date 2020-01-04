@@ -8,12 +8,12 @@
 #include <QQmlApplicationEngine>
 
 
-class windowUpdater : public QObject
+class WindowUpdater : public QObject
 {
     Q_OBJECT
 public:
-    windowUpdater() {
-        qDebug() << "Starting windowUpdater" << endl;
+    WindowUpdater() {
+        qDebug() << "Creating WindowUpdater" << endl;
         timer = new QTimer();
         timer->setInterval(1000);
         connect(timer, SIGNAL(timeout()), this, SLOT(tock()));
@@ -30,29 +30,42 @@ signals:
 
 public slots:
     void tock() {
-        qDebug() << "Something happened" << endl;
+        qDebug() << "Updater thread : " << QThread::currentThreadId();
+        qDebug() << " - Timer tick" << endl;
         if (worked) {
             emit tick(1);
         } else {
             emit tick(2);
         }
+        worked = !worked;
     }
 };
 
 
 
 class UpdaterInterface : public QObject {
+
     Q_OBJECT
 
 public:
 
     static UpdaterInterface *getInstance();
 
+    UpdaterInterface() {
+        worker = new WindowUpdater();
+        qDebug() << "Initializing Window Updater" << endl;
+        worker->moveToThread(&myThread);
+        connect(worker, &WindowUpdater::tick, this, &UpdaterInterface::hasWork);
+        myThread.start();
+    }
+
 signals:
     void updateGUI(int arg);
 
 public slots:
     void hasWork(int arg) {
+        qDebug() << "Interface thread : " << QThread::currentThreadId();
+        qDebug() << " - Update GUI" << endl;
         emit updateGUI(arg);
     }
 
@@ -68,17 +81,11 @@ public slots:
 
 
 private:
-    UpdaterInterface() {
-        worker = new windowUpdater();
-        qDebug() << "Initializing Window Updater" << endl;
-        worker->moveToThread(&myThread);
-        connect(worker, &windowUpdater::tick, this, &UpdaterInterface::hasWork);
-        myThread.start();
-    }
+
 
     static UpdaterInterface *instance;
     QThread myThread;
-    windowUpdater *worker;
+    WindowUpdater *worker;
 };
 
 #endif // WINDOWUPDATER_H

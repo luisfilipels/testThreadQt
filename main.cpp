@@ -15,9 +15,10 @@ int main(int argc, char *argv[])
 
     qDebug() << "Starting application" << endl;
 
-    UpdaterInterface::getInstance();
+    //UpdaterInterface::getInstance();
 
-    qmlRegisterSingletonType<UpdaterInterface>("threadtest", 1, 0, "Updater", &UpdaterInterface::UpdaterInterfaceProvider);
+    qmlRegisterType<UpdaterInterface>("Threadtest", 1, 0, "Updater");
+    //qmlRegisterSingletonType<UpdaterInterface>("Threadtest", 1, 0, "Updater", &UpdaterInterface::UpdaterInterfaceProvider);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

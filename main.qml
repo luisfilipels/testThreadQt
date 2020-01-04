@@ -1,6 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import threadtest 1.0
+import Threadtest 1.0
 
 Window {
     id: window
@@ -22,7 +22,21 @@ Window {
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 44
 
-        Updater.onUpdateGUI:  {
+        Updater {
+            onUpdateGUI: {
+                if (arg === 1) {
+                    element.text = "Hello World!"
+                    element.color = "#ffffff"
+                    window.color = "#000000"
+                } else {
+                    element.text = "World Hello!"
+                    element.color = "000000"
+                    window.color = "#ffffff"
+                }
+            }
+        }
+
+        /*Updater.onUpdateGUI:  {
             if (arg === 1) {
                 element.text = "Hello World!"
                 element.color = "#ffffff"
@@ -32,6 +46,6 @@ Window {
                 element.color = "000000"
                 window.color = "#ffffff"
             }
-        }
+        }*/
     }
 }
