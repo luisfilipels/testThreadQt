@@ -30,12 +30,13 @@ signals:
 
 public slots:
     void tock() {
-        qDebug() << "Something happened" << endl;
+        qDebug() << "Tick - Thread ID: " << QThread::currentThreadId() << endl;
         if (worked) {
             emit tick(1);
         } else {
             emit tick(2);
         }
+        worked = !worked;
     }
 };
 
@@ -44,15 +45,24 @@ public slots:
 class UpdaterInterface : public QObject {
     Q_OBJECT
 
+    Q_PROPERTY(QString testString READ getString)
+
 public:
 
     static UpdaterInterface *getInstance();
+
+    QString getString () {
+        return testString;
+    }
+
+    QString testString;
 
 signals:
     void updateGUI(int arg);
 
 public slots:
     void hasWork(int arg) {
+        qDebug() << "Tock - Thread ID: " << QThread::currentThreadId() << endl;
         emit updateGUI(arg);
     }
 
@@ -62,13 +72,13 @@ public slots:
 
             qDebug() << "Entered provider" << endl;
 
-            UpdaterInterface *updater = UpdaterInterface::getInstance();
-            return updater;
+            return UpdaterInterface::getInstance();
         }
 
 
 private:
     UpdaterInterface() {
+        testString = "Hello World ruim";
         worker = new windowUpdater();
         qDebug() << "Initializing Window Updater" << endl;
         worker->moveToThread(&myThread);

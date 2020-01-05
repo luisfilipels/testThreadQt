@@ -1,6 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import threadtest 1.0
+import Threadtest 1.0
 
 Window {
     id: window
@@ -17,12 +17,27 @@ Window {
         width: 261
         height: 104
         color: "#ffffff"
-        text: qsTr("EDIT ME!!")
+        text: qsTr(Updater.testString)
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 44
 
-        Updater.onUpdateGUI:  {
+        Connections {
+            target: Updater
+            onUpdateGUI: {
+                if (arg === 1) {
+                    element.text = "Hello World!"
+                    element.color = "#ffffff"
+                    window.color = "#000000"
+                } else {
+                    element.text = "World Hello!"
+                    element.color = "000000"
+                    window.color = "#ffffff"
+                }
+            }
+        }
+
+        /*Updater.onUpdateGUI:  {
             if (arg === 1) {
                 element.text = "Hello World!"
                 element.color = "#ffffff"
@@ -32,6 +47,6 @@ Window {
                 element.color = "000000"
                 window.color = "#ffffff"
             }
-        }
+        }*/
     }
 }
